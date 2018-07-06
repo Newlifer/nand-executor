@@ -1,8 +1,10 @@
 """ Interpreter for virtual logic schemas
 designed with NAND logic elements.
 """
-from ruamel.yaml import YAML
+import sys
+import getopt
 
+from ruamel.yaml import YAML
 
 
 class Executor:
@@ -65,8 +67,13 @@ class Executor:
                 )
 
 
-if __name__ == '__main__':
-    filename = 'example/add.vsd'
+def do_job(filename):
+    """ Do interpreter's job!
+
+    Args:
+        filename (str): file with logic scheme
+
+    """
     with open(filename, 'r') as file:
         yaml = YAML()
         code = yaml.load(file.read())
@@ -87,3 +94,21 @@ if __name__ == '__main__':
         executor.execute()
 
         print(executor.gates_values)
+
+
+def main(argv):
+    """ Main function.
+    """
+    try:
+        opts, args = getopt.getopt(argv, 'hi:o', ['ifile=', 'ofile='])
+    except getopt.GetoptError:
+        print('run.py -i <inputfile>')
+        sys.exit(2)
+
+    for opt, arg in opts:
+        if opt in ('-i', '-ifile'):
+            do_job(arg)
+
+
+if __name__ == '__main__':
+    main(sys.argv[1:])
