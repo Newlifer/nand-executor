@@ -2,6 +2,12 @@
 inputs:
   - a1
   - b1
+# Default inputs values, optional
+default_inputs:
+  - a1: false
+  - b1: false
+# Count of clocks, optional
+clocks: 1
 # Output wires of scheme
 outputs:
   - r1

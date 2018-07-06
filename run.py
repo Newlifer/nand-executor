@@ -67,7 +67,7 @@ class Executor:
                 )
 
 
-def do_job(filename_in, filename_out):
+def do_job(filename_in, filename_out, use_defaults):
     """ Do interpreter's job!
 
     Args:
@@ -82,14 +82,13 @@ def do_job(filename_in, filename_out):
         executor.inputs = code['inputs']
         executor.outputs = code['outputs']
         executor.gates = code['gates']
-
-        # executor.inputs['a1'] = True
+        executor.count_to = code.get('clocks') or 1
 
         executor.count_to = 1 # execute loop of clock just 1 time
         executor.fill_inputs()
 
-        executor.inputs_values['a1'] = True
-        executor.inputs_values['b1'] = True
+        if use_defaults:
+            executor.inputs_values = code.get('default_inputs')
 
         executor.execute()
 
@@ -104,21 +103,25 @@ def main(argv):
     """ Main function.
     """
     try:
-        opts, args = getopt.getopt(argv, 'hi:o', ['ifile=', 'ofile='])
+        opts, _ = getopt.getopt(argv, 'hi:o:d', ['ifile=', 'ofile=', 'defaults'])
     except getopt.GetoptError:
         print('run.py -i <inputfile>')
         sys.exit(2)
 
     filename_in = None
     filename_out = None
+    use_defaults = False
 
     for opt, arg in opts:
         if opt in ('-i', '--ifile'):
             filename_in = arg
         elif opt in ('-o', '--ofile'):
             filename_out = arg
+        elif opts in ('-d', '--defaults'):
+            use_defaults = True
 
-    do_job(filename_in, filename_out)
+
+    do_job(filename_in, filename_out, use_defaults)
 
 
 if __name__ == '__main__':
