@@ -1,0 +1,18 @@
+# Input wires of scheme
+inputs:
+  - a1
+  - b1
+# Output wires of scheme
+outputs:
+  - r1
+# Design of scheme, links of every logic element (and each over)
+gates:
+  # Just NAND them
+  - adder1:
+      a: a1
+      b: b1
+
+  - adder2:
+      a: adder1
+      b: b1
+      r: r1
