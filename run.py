@@ -67,14 +67,14 @@ class Executor:
                 )
 
 
-def do_job(filename):
+def do_job(filename_in, filename_out):
     """ Do interpreter's job!
 
     Args:
         filename (str): file with logic scheme
 
     """
-    with open(filename, 'r') as file:
+    with open(filename_in, 'r') as file:
         yaml = YAML()
         code = yaml.load(file.read())
 
@@ -95,6 +95,10 @@ def do_job(filename):
 
         print(executor.gates_values)
 
+        with open(filename_out, 'w') as output:
+            yaml_out = YAML()
+            yaml_out.dump(executor.gates_values, output)
+
 
 def main(argv):
     """ Main function.
@@ -105,9 +109,16 @@ def main(argv):
         print('run.py -i <inputfile>')
         sys.exit(2)
 
+    filename_in = None
+    filename_out = None
+
     for opt, arg in opts:
-        if opt in ('-i', '-ifile'):
-            do_job(arg)
+        if opt in ('-i', '--ifile'):
+            filename_in = arg
+        elif opt in ('-o', '--ofile'):
+            filename_out = arg
+
+    do_job(filename_in, filename_out)
 
 
 if __name__ == '__main__':
