@@ -55,10 +55,7 @@ class Executor:
         """
         self._init_inputs()
         for _ in range(self.count_to):
-            for value in self.gates:
-                name = list(value.keys())[0]
-                params = list(value.values())[0]
-
+            for name, params in self.gates.items():
                 result_path = params.get('r')
                 result_path = result_path if result_path else name
                 self.gates_values[result_path] = self.element_function(
@@ -67,7 +64,7 @@ class Executor:
                 )
 
 
-def do_job(filename_in, filename_out, use_defaults):
+def do_job(filename_in, filename_out, use_defaults, clocks):
     """ Do interpreter's job!
 
     Args:
@@ -88,7 +85,7 @@ def do_job(filename_in, filename_out, use_defaults):
         executor.fill_inputs()
 
         if use_defaults:
-            executor.inputs_values = code.get('default_inputs')
+            executor.inputs_values = dict(code.get('default_inputs'))
 
         executor.execute()
 
@@ -103,7 +100,7 @@ def main(argv):
     """ Main function.
     """
     try:
-        opts, _ = getopt.getopt(argv, 'hi:o:d', ['ifile=', 'ofile=', 'defaults'])
+        opts, _ = getopt.getopt(argv, 'hi:o:d:c', ['ifile=', 'ofile=', 'defaults', 'clocks='])
     except getopt.GetoptError:
         print('run.py -i <inputfile>')
         sys.exit(2)
@@ -111,17 +108,19 @@ def main(argv):
     filename_in = None
     filename_out = None
     use_defaults = False
+    clocks = 1
 
     for opt, arg in opts:
         if opt in ('-i', '--ifile'):
             filename_in = arg
         elif opt in ('-o', '--ofile'):
             filename_out = arg
-        elif opts in ('-d', '--defaults'):
+        elif opt in ('-d', '--defaults'):
             use_defaults = True
+        elif opt in ('-c', '--clocks'):
+            clocks = arg
 
-
-    do_job(filename_in, filename_out, use_defaults)
+    do_job(filename_in, filename_out, use_defaults, clocks)
 
 
 if __name__ == '__main__':
