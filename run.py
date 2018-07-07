@@ -50,6 +50,7 @@ class Executor:
     def _init_inputs(self):
         self.gates_values.update(self.gates)
         self.gates_values.update(self.inputs_values)
+        self.output_values = self.outputs
 
     def execute(self):
         """ Traverses thru the gates tree.
@@ -59,10 +60,13 @@ class Executor:
             for name, params in self.gates.items():
                 result_path = params.get('r')
                 result_path = result_path if result_path else name
-                self.gates_values[result_path] = self.element_function(
+                value = self.element_function(
                     self.gates_values[params['a']],
                     self.gates_values[params['b']],
                 )
+                self.gates_values[result_path] = value
+                if result_path in self.output_values:
+                    self.output_values[result_path] = value
 
 
 def do_job(filename_in, filename_out, use_defaults, clocks):
@@ -96,6 +100,9 @@ def do_job(filename_in, filename_out, use_defaults, clocks):
                 yaml_out.dump(executor.gates_values, output)
         else:
             yaml_out.dump(executor.gates_values, sys.stdout)
+
+        print('--- Outputs ---')
+        yaml_out.dump(executor.output_values, sys.stdout)
 
 
 def main(argv):

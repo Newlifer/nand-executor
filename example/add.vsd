@@ -1,25 +1,27 @@
 # Input wires of scheme
 inputs:
-  a1
-  b1
+  s
+  r
 # Default inputs values, optional
 default_inputs:
-  a1: false
-  b1: false
+  s: false
+  r: true
 # Count of clocks, optional
 clocks: 1
 # Output wires of scheme
 outputs:
-  - r1
+  q:
+  notq:
 # Design of scheme, links of every logic element (and each over)
 gates:
   # Just NAND them
   adder1:
-    a: a1
-    b: b1
-    # r: r1
+    # a: a1
+    a: adder2
+    b: s
+    r: q
 
   adder2:
     a: adder1
-    b: b1
-    r: r1
+    b: r
+    r: notq

@@ -6,8 +6,8 @@ default_inputs:
   r: true
 clocks: 1
 outputs:
-  - q
-  - notq
+  q:
+  notq:
 gates:
   adder1:
     a: adder2
