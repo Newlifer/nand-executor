@@ -1,0 +1,20 @@
+inputs:
+  s
+  r
+default_inputs:
+  s: false
+  r: true
+clocks: 1
+outputs:
+  - q
+  - notq
+gates:
+  adder1:
+    a: adder2
+    b: s
+    r: q
+
+  adder2:
+    a: adder1
+    b: r
+    r: notq

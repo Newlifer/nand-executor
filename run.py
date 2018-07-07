@@ -18,8 +18,8 @@ class Executor:
         self.outputs = None
         self.output_values = None
 
-        self.gates = None
-        self.gates_values = None
+        self.gates = dict()
+        self.gates_values = dict()
 
         self.clock = False
 
@@ -48,7 +48,8 @@ class Executor:
         return not (a_op and b_op)
 
     def _init_inputs(self):
-        self.gates_values = self.inputs_values
+        self.gates_values.update(self.gates)
+        self.gates_values.update(self.inputs_values)
 
     def execute(self):
         """ Traverses thru the gates tree.
@@ -89,11 +90,12 @@ def do_job(filename_in, filename_out, use_defaults, clocks):
 
         executor.execute()
 
-        print(executor.gates_values)
-
-        with open(filename_out, 'w') as output:
-            yaml_out = YAML()
-            yaml_out.dump(executor.gates_values, output)
+        yaml_out = YAML()
+        if filename_out:
+            with open(filename_out, 'w') as output:                
+                yaml_out.dump(executor.gates_values, output)
+        else:
+            yaml_out.dump(executor.gates_values, sys.stdout)
 
 
 def main(argv):
